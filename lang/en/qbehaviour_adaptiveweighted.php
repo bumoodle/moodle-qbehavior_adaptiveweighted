@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['gradingdetailsmaxpossible'] = 'You were penalized {$a->lastpenalty}/{$a->max} for your most recent submission.<br><i>If you get this question correct, you can still get {$a->maxpossible}/{$a->max}</i>.';
+$string['gradingdetailsmaxpossible'] = 'You were penalized {$a->lastpenalty}/{$a->max} for your most recent submission.<em>If you get this question correct, you can still get {$a->maxpossible}/{$a->max}</em>.';
 $string['gradingdetailspenalty'] = 'You were penalized {$a->lastpenalty}/{$a->max} for your most recent submission.';
 $string['pluginname'] = 'Weighted adaptive mode';
 

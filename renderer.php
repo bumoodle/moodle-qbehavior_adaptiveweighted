@@ -129,35 +129,33 @@ class qbehaviour_adaptiveweighted_renderer extends qbehaviour_adaptive_renderer
 	* @param object $mark contains information about the current mark.
 	* @param question_display_options $options display options.
 	*/
-	protected function penalty_info(question_attempt $qa, $mark, question_display_options $options) 
-	{
+    protected function grading_details(qbehaviour_adaptive_mark_details $details, question_display_options $options) 
+    {
 		//if no penalties have been set, return an empty string
-		if (!$qa->get_question()->penalty)
+		if (!$details->totalpenalty)
 			return '';
 		
 		$output = '';
 		
 		// Print details of grade adjustment due to penalties
-		if ($mark->raw != $mark->cur)
-			$output .= ' ' . get_string('gradingdetailsadjustment', 'qbehaviour_adaptive', $mark);
-		
-	
+		//if ($details->rawmark != $details->actualmark) {
+            $output .= ' ' . get_string('gradingdetailsadjustment', 'qbehaviour_adaptive', $details->get_formatted_marks($options->markdp));
+        //}
+
 		// Print information about any new penalty, only relevant if the answer can be improved.
-		if ($qa->get_behaviour()->is_state_improvable($qa->get_state())) 
-		{
+        if ($details->improvable)  {
+
 			//calculate the maximum score the student can still achieve
-			$maxpossible = $mark->max - $mark->max * $qa->get_last_behaviour_var('_sumpenalty', 0);
+			$maxpossible = $details->maxmark - ($details->maxmark * $details->totalpenalty);
 			
-			$lastpenalty = $mark->max * $qa->get_last_behaviour_var('_lastpenalty', 0);
+			$lastpenalty = $details->maxmark * $details->currentpenalty;
 			
 			//and return that, instead of penalty information
-			if($maxpossible > 0)
-			{
-				$output .= ' ' . get_string('gradingdetailsmaxpossible', 'qbehaviour_adaptiveweighted', array('lastpenalty' => format_float($lastpenalty, $options->markdp), 'maxpossible' => format_float(max($maxpossible, 0), $options->markdp), 'max' => $mark->max));
+			if(round($maxpossible, $options->markdp) > 0) {
+				$output .= ' ' . get_string('gradingdetailsmaxpossible', 'qbehaviour_adaptiveweighted', array('lastpenalty' => format_float($lastpenalty, $options->markdp), 'maxpossible' => format_float(max($maxpossible, 0), $options->markdp), 'max' => format_float($details->maxmark, $options->markdp)));
 			}
-			else
-			{
-				$output .= ' ' . get_string('gradingdetailspenalty', 'qbehaviour_adaptiveweighted', array('lastpenalty' => format_float($lastpenalty, $options->markdp), 'max' => $mark->max));
+			else {
+				$output .= ' ' . get_string('gradingdetailspenalty', 'qbehaviour_adaptiveweighted', array('lastpenalty' => format_float($lastpenalty, $options->markdp), 'max' => format_float($details->maxmark, $options->markdp)));
 			}
 		}
 			
